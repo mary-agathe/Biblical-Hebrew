@@ -23,6 +23,7 @@
 /* Responsive table-to-card layout for small screens; wider tables stay scrollable on tablets. */
 @media(max-width:680px){.app{width:100%;padding:16px 14px 36px}.heading-row{gap:10px}.heading-row h1{font-size:clamp(24px,7vw,31px)}.study-layout{gap:14px}.flashcard{height:min(66vh,420px);min-height:315px}.big-hebrew{font-size:clamp(32px,10vw,68px)}.top-actions{gap:6px}.nav{scrollbar-width:thin}.nav button{padding-left:12px;padding-right:12px}.toolbar>*{min-width:0}.search-wrap{flex-basis:100%}.table-card{overflow:visible}.word-list{display:block;min-width:0;width:100%}.word-list thead{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.word-list tbody{display:grid;gap:9px;padding:10px}.word-list tbody tr{display:grid;grid-template-columns:minmax(105px,.8fr) minmax(0,1.2fr);align-items:center;gap:3px 8px;border:1px solid var(--line);border-radius:13px;padding:10px}.word-list tbody td{display:block;min-width:0;border:0;padding:3px 5px;overflow-wrap:anywhere}.word-list tbody td:first-child{grid-column:1;grid-row:1 / span 6;align-self:center}.word-list tbody td:not(:first-child){grid-column:2}.word-list tbody td:nth-child(2){font-weight:600}.word-list tbody td:nth-child(3),.word-list tbody td:nth-child(4),.word-list tbody td:nth-child(5){font-size:12px;color:var(--muted)}.word-list tbody td:nth-child(6){grid-row:auto}.word-hebrew{font-size:clamp(20px,6vw,26px);overflow-wrap:anywhere}.word-forms .hebrew{font-size:15px}.table-empty{padding:22px}.quiz-config{display:grid;grid-template-columns:1fr 1fr}.quiz-config button{grid-column:1/-1}.quiz-config label,.quiz-config select{min-width:0;width:100%}.alphabet-layout,.grammar-layout{gap:12px}.alphabet-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.letter-tile{min-width:0}.chart-card,.content-panel,.reference-card{padding:17px}.grammar-topic{padding:16px;min-width:0;width:100%;overflow:hidden}.grammar-content{min-width:0;width:100%}.grammar-topic p{overflow-wrap:anywhere}.grammar-topic .table-card{width:100%;max-width:100%;min-width:0;overflow-x:auto}.grammar-topic .examples{min-width:0;max-width:100%}.grammar-example{max-width:100%;white-space:normal;overflow-wrap:anywhere}.reference-table{min-width:580px}}
 @media(max-width:390px){.app{padding-left:10px;padding-right:10px}.topbar{margin-bottom:20px}.nav button{font-size:13px;padding-left:10px;padding-right:10px}.flashcard{height:340px;min-height:300px}.card-face{padding-left:13px;padding-right:13px}.big-hebrew{font-size:clamp(29px,9vw,48px)}.rating-row{gap:4px}.rate-btn{font-size:12px}.word-list tbody{padding:7px}.word-list tbody tr{grid-template-columns:minmax(88px,.8fr) minmax(0,1.2fr);padding:8px 6px;gap:2px 4px}.word-list tbody td{padding:2px}.progress-strip{gap:8px}.metric{padding:12px}.match-board{gap:6px}.match-tile{padding:7px 4px}}
+.translit{font-size:16px}
 </style>
 </head>
 <body>
@@ -110,8 +111,8 @@
     {"id":"reading1-ets","hebrew":"עֵץ","transliteration":"ʿēṣ","english":"tree; wood","partOfSpeech":"noun · masculine","forms":"plural: עֵצִים (trees; wood)","lesson":"Reading 1 · מִקְרָא א"},
     {"id":"reading1-adam","hebrew":"אָדָם","transliteration":"ʾādām","english":"person; man; mankind","partOfSpeech":"noun","lesson":"Reading 1 · מִקְרָא א"},
     {"id":"reading1-mishpahah","hebrew":"מִשְׁפָּחָה","transliteration":"mišpāḥāh","english":"family","partOfSpeech":"noun · feminine","lesson":"Reading 1 · מִקְרָא א"},
-    {"id":"reading1-yeled","hebrew":"יֶלֶד","transliteration":"yeled","english":"boy; child","partOfSpeech":"noun · masculine","forms":"related: בֵּן (son)","lesson":"Reading 1 · מִקְרָא א"},
-    {"id":"reading1-yaldah","hebrew":"יַלְדָּה","transliteration":"yaldāh","english":"girl; young woman","partOfSpeech":"noun · feminine","forms":"related: בַּת (daughter)","lesson":"Reading 1 · מִקְרָא א"},
+    {"id":"reading1-yeled","hebrew":"יֶלֶד","transliteration":"yeled","english":"boy; child","partOfSpeech":"noun · masculine","forms":"בֵּן","lesson":"Reading 1 · מִקְרָא א"},
+    {"id":"reading1-yaldah","hebrew":"יַלְדָּה","transliteration":"yaldāh","english":"girl; young woman","partOfSpeech":"noun · feminine","forms":"בַּת","lesson":"Reading 1 · מִקְרָא א"},
     {"id":"reading1-behemah","hebrew":"בְּהֵמָה","transliteration":"bəhēmāh","english":"cattle; livestock; beast","partOfSpeech":"noun · feminine","lesson":"Reading 1 · מִקְרָא א"},
     {"id":"reading1-gamal","hebrew":"גָּמָל","transliteration":"gāmāl","english":"camel","partOfSpeech":"noun · masculine","lesson":"Reading 1 · מִקְרָא א"},
     {"id":"reading1-hamor","hebrew":"חֲמוֹר","transliteration":"ḥămōr","english":"donkey","partOfSpeech":"noun · masculine","lesson":"Reading 1 · מִקְרָא א"},
@@ -259,6 +260,8 @@
   state.vocabulary = state.vocabulary.filter(w => !oldSampleIds.has(w.id));
   const knownSeedIds = new Set(state.vocabulary.map(w => w.id));
   starter.vocabulary.forEach(w => { if (!knownSeedIds.has(w.id)) state.vocabulary.push(w); });
+  const relatedHebrewForms = {'reading1-yeled':'בֵּן','reading1-yaldah':'בַּת'};
+  state.vocabulary.forEach(w=>{if(relatedHebrewForms[w.id])w.forms=relatedHebrewForms[w.id];});
   const nounGenders = {
     'course-l3-yhwh':'Masculine (grammatical)','course-l3-adon':'Masculine','course-l3-adoni':'Masculine','course-l3-adonai':'Masculine','course-l3-elohim':'Masculine (plural form)',
     'course-l5-davar':'Masculine','course-l5-shalom':'Masculine',
@@ -284,7 +287,7 @@
   Object.entries(lesson79IdMap).forEach(([oldId,newId])=>{if(state.words[oldId]&&!state.words[newId])state.words[newId]=state.words[oldId];delete state.words[oldId];});
   state.settings = { ...freshProgress().settings, ...(state.settings || {}) };
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
-  const clean = value => String(value ?? '').replace(/[\u0591-\u05C7]/g, '').toLocaleLowerCase().trim();
+  const clean = value => String(value ?? '').toLocaleLowerCase().replace(/š/g,'sh').replace(/[ʾʿ]/g,'').replace(/ḵ/g,'kh').replace(/ṣ/g,'ts').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[\u0591-\u05C7]/g,'').trim();
   const displayHebrew = value => $('#showNiqqud').checked ? String(value ?? '') : String(value ?? '').replace(/[\u0591-\u05C7]/g, '');
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const today = () => new Date().toISOString().slice(0,10);

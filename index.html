@@ -46,6 +46,15 @@
 @media(max-height:620px) and (min-width:681px){.flashcard{height:min(398px,55vh);min-height:280px}}
 @media(prefers-reduced-motion:reduce){.flashcard.swipe-out-left,.flashcard.swipe-out-right,.flashcard.swipe-in-left,.flashcard.swipe-in-right{animation:none}}
 .detail-letter-tags{margin:0 0 12px}
+.chapter-picker{position:relative;min-width:170px}
+.chapter-picker summary{list-style:none;cursor:pointer;border:1px solid var(--line);border-radius:11px;background:var(--surface);padding:10px 12px;color:var(--muted);font-size:13px;font-weight:600;white-space:nowrap}
+.chapter-picker summary::-webkit-details-marker{display:none}
+.chapter-picker summary:after{content:'⌄';padding-left:10px}
+.chapter-picker-menu{position:absolute;top:calc(100% + 5px);left:0;z-index:5;display:grid;gap:2px;min-width:220px;max-height:270px;overflow:auto;padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow)}
+.chapter-picker-menu label{display:flex;align-items:center;gap:8px;padding:7px 6px;border-radius:7px;color:var(--ink);font-size:13px;cursor:pointer}
+.chapter-picker-menu label:hover{background:var(--surface-2)}
+.chapter-picker-menu input{accent-color:var(--green)}
+.chapter-picker-clear{border:0;background:none;color:var(--green);padding:8px 6px;text-align:left;font-size:12px;font-weight:600}
 </style>
 </head>
 <body>
@@ -238,7 +247,7 @@
             <div class="card-inner"><div class="card-face card-front"><button id="cardStar" class="star-btn" aria-label="Favorite this word">☆</button><div id="promptLabel" class="card-prompt">Hebrew</div><div id="promptContent"></div><div class="tap-hint">Tap or press space to reveal</div></div><div class="card-face card-back"><div class="card-prompt">Meaning</div><div id="answerContent"></div><div class="tap-hint">Rate how well you remembered</div></div></div>
           </div>
           <div id="ratings" class="rating-row hidden" aria-label="Rate recall"><button class="rate-btn" data-rating="again">Again<span>1 · soon</span></button><button class="rate-btn" data-rating="hard">Hard<span>2 · 1 day</span></button><button class="rate-btn" data-rating="good">Good<span>3 · 3 days</span></button><button class="rate-btn" data-rating="easy">Easy<span>4 · 7 days</span></button></div>
-          <div class="study-options"><label class="select-wrap">Direction <select id="direction"><option value="he-en">Hebrew → English</option><option value="en-he">English → Hebrew</option><option value="random">Random</option></select></label><label class="select-wrap">Study set <select id="studySet"><option value="all">All lessons</option><option value="due">Due today</option><option value="starred">Starred only</option></select></label><div class="switchline"><label><input id="showNiqqud" type="checkbox" checked> Show niqqud</label><label><input id="showTranslit" type="checkbox" checked> Transliteration</label></div></div>
+          <div class="study-options"><label class="select-wrap">Direction <select id="direction"><option value="he-en">Hebrew → English</option><option value="en-he">English → Hebrew</option><option value="random">Random</option></select></label><label class="select-wrap">Study set <select id="studySet"><option value="all">All lessons</option><option value="due">Due today</option><option value="starred">Starred only</option></select></label><details id="studyChapterPicker" class="chapter-picker"><summary>All chapters</summary><div class="chapter-picker-menu"></div></details><div class="switchline"><label><input id="showNiqqud" type="checkbox" checked> Show niqqud</label><label><input id="showTranslit" type="checkbox" checked> Transliteration</label></div></div>
         </div>
         <aside class="side-panel"><h3>Your progress</h3><div><div class="due-number" id="sideDue">0</div><div class="side-caption">words due today</div><div class="thin-progress"><span id="overallProgress"></span></div><div class="side-caption" id="progressCaption">0 of 10 words mastered</div></div><div class="level-mini" id="levelSummary"></div><div class="side-divider"></div><div class="keyboard-hint"><span class="key">Space</span> flip card<br><span class="key">1</span> Again &nbsp; <span class="key">2</span> Hard<br><span class="key">3</span> Good &nbsp; <span class="key">4</span> Easy</div></aside>
       </div>
@@ -246,7 +255,7 @@
     <section id="page-words" class="page hidden">
       <div class="heading-row"><div><div class="eyebrow">Your personal lexicon</div><h1>Word library</h1><div class="sub" id="wordCountText">10 words in your collection</div></div></div>
       <div class="progress-strip" id="metrics"></div>
-      <div class="toolbar"><div class="search-wrap"><input id="wordSearch" type="search" placeholder="Search Hebrew or English…" autocomplete="off" aria-label="Search words"></div><select id="lessonFilter" class="filter-select"><option value="">All lessons</option></select><select id="levelFilter" class="filter-select"><option value="">All levels</option><option>New</option><option>Learning</option><option>Familiar</option><option>Mastered</option></select><select id="starFilter" class="filter-select"><option value="all">All words</option><option value="starred">Starred only</option></select><select id="sortWords" class="filter-select"><option value="lesson">Sort: Lesson</option><option value="hebrew">Sort: Hebrew</option><option value="english">Sort: English</option><option value="level">Sort: Level</option><option value="recent">Sort: Recently reviewed</option></select></div>
+      <div class="toolbar"><div class="search-wrap"><input id="wordSearch" type="search" placeholder="Search Hebrew or English…" autocomplete="off" aria-label="Search words"></div><details id="wordChapterPicker" class="chapter-picker"><summary>All chapters</summary><div class="chapter-picker-menu"></div></details><select id="lessonFilter" class="filter-select" hidden><option value="">All lessons</option></select><select id="levelFilter" class="filter-select"><option value="">All levels</option><option>New</option><option>Learning</option><option>Familiar</option><option>Mastered</option></select><select id="starFilter" class="filter-select"><option value="all">All words</option><option value="starred">Starred only</option></select><select id="sortWords" class="filter-select"><option value="lesson">Sort: Lesson</option><option value="hebrew">Sort: Hebrew</option><option value="english">Sort: English</option><option value="level">Sort: Level</option><option value="recent">Sort: Recently reviewed</option></select></div>
       <div class="table-card"><table class="word-list"><thead><tr><th>Hebrew</th><th>Meaning</th><th>Lesson</th><th>Type</th><th>Gender / parse</th><th>Level</th><th>★</th></tr></thead><tbody id="wordRows"></tbody></table><div id="wordEmpty" class="table-empty hidden">No words match these filters.</div></div>
     </section>
     <section id="page-quiz" class="page hidden">
@@ -284,7 +293,7 @@
   'use strict';
   const STORE = 'ivrit-study-v1';
   const starter = JSON.parse(document.getElementById('starter-data').textContent);
-  const freshProgress = () => ({ words:{}, reviews:[], reviewList:[], quizzes:[], streak:{lastDay:'',count:0}, settings:{dark:false,direction:'he-en',studySet:'all',showNiqqud:true,showTranslit:true,shuffle:false} });
+  const freshProgress = () => ({ words:{}, reviews:[], reviewList:[], quizzes:[], streak:{lastDay:'',count:0}, settings:{dark:false,direction:'he-en',studySet:'all',studyChapters:[],wordChapters:[],showNiqqud:true,showTranslit:true,shuffle:false} });
   let saved;
   try { saved = JSON.parse(localStorage.getItem(STORE) || 'null'); } catch { saved = null; }
   let state = saved && saved.vocabulary ? saved : { ...starter, ...freshProgress() };
@@ -360,7 +369,7 @@
   let toastTimer;
   function toast(message){const el=$('#toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2300);}
   function dueWords(){return state.vocabulary.filter(w=>!prog(w.id).due || prog(w.id).due<=today());}
-  function selectedWords(){const mode=$('#studySet')?.value || state.settings.studySet;let words=state.vocabulary;if(mode==='due')words=dueWords();else if(mode==='starred')words=words.filter(w=>w.starred);else if(mode==='missed')words=words.filter(w=>state.reviewList.includes(w.id));else if(mode.startsWith('lesson:'))words=words.filter(w=>(w.lesson||'')===mode.slice(7));return words;}
+  function selectedWords(){const mode=$('#studySet')?.value || state.settings.studySet;let words=state.vocabulary;if(mode==='due')words=dueWords();else if(mode==='starred')words=words.filter(w=>w.starred);else if(mode==='missed')words=words.filter(w=>state.reviewList.includes(w.id));else if(mode.startsWith('lesson:'))words=words.filter(w=>(w.lesson||'')===mode.slice(7));const chapters=state.settings.studyChapters||[];if(chapters.length)words=words.filter(w=>chapters.includes(w.lesson));return words;}
   function updateShuffleButton(){const enabled=!!state.settings.shuffle;const button=$('#shuffleBtn');button.setAttribute('aria-checked',String(enabled));button.title=enabled?'Cards are shuffled. Turn off to restore original order.':'Cards are in original order. Turn on to shuffle this study set.';}
   function refreshDeck(){const cards=selectedWords(),signature=cards.map(w=>w.id).join('|');if(signature!==deckSourceSignature){deckSourceSignature=signature;deck=state.settings.shuffle?shuffled(cards):cards;position=0;}else if(!state.settings.shuffle)deck=cards;if(position>=deck.length)position=0;}
   function compactVerbParse(parse){if(!parse)return '';if(typeof parse==='string')return parse;return [parse.binyan,parse.conjugation,parse.person].filter(Boolean).join(' · ');}
@@ -488,6 +497,20 @@
   $('#direction').addEventListener('change',e=>{state.settings.direction=e.target.value;save();renderCard();});$('#studySet').addEventListener('change',e=>{state.settings.studySet=e.target.value;deckSourceSignature='';position=0;save();renderCard();});['showNiqqud','showTranslit'].forEach(id=>$('#'+id).addEventListener('change',e=>{state.settings[id]=e.target.checked;save();renderCard();}));$('#shuffleBtn').addEventListener('click',()=>{state.settings.shuffle=!state.settings.shuffle;deckSourceSignature='';position=0;updateShuffleButton();save();renderCard();});$('#themeToggle').addEventListener('click',()=>{state.settings.dark=!state.settings.dark;document.body.classList.toggle('dark',state.settings.dark);$('#themeToggle').textContent=state.settings.dark?'☀':'☾';save();});
   ['wordSearch','lessonFilter','levelFilter','starFilter','sortWords'].forEach(id=>$('#'+id).addEventListener(id==='wordSearch'?'input':'change',renderWords));$('#modalClose').addEventListener('click',()=>$('#detailModal').classList.add('hidden'));$('#detailModal').addEventListener('click',e=>{if(e.target===$('#detailModal'))$('#detailModal').classList.add('hidden');});document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#detailModal').classList.add('hidden');});
   $('#backupFile').addEventListener('change',e=>{if(e.target.files[0])restoreBackup(e.target.files[0]);e.target.value='';});$('#exportBtn').addEventListener('click',exportBackup);
+  const renderWordsBase=renderWords;
+  renderWords=function(){
+    renderWordsBase();
+    const lessons=[...new Set(state.vocabulary.map(w=>(w.lesson||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'}));
+    const renderChapterPicker=(id,selected)=>{const picker=$('#'+id),wasOpen=picker.open,valid=selected.filter(lesson=>lessons.includes(lesson));picker.innerHTML=`<summary>${valid.length?`${valid.length} ${valid.length===1?'chapter':'chapters'} selected`:'All chapters'}</summary><div class="chapter-picker-menu">${lessons.map(lesson=>`<label><input type="checkbox" value="${escapeHtml(lesson)}" ${valid.includes(lesson)?'checked':''}>${escapeHtml(lesson)}</label>`).join('')}<button type="button" class="chapter-picker-clear">Clear selection</button></div>`;picker.open=wasOpen;};
+    renderChapterPicker('studyChapterPicker',state.settings.studyChapters||[]);
+    renderChapterPicker('wordChapterPicker',state.settings.wordChapters||[]);
+    const chapters=state.settings.wordChapters||[];let visible=0;
+    $$('#wordRows tr').forEach(row=>{const show=!chapters.length||chapters.includes(byId(row.dataset.word)?.lesson);row.style.display=show?'':'none';if(show)visible++;});
+    $('#wordEmpty').classList.toggle('hidden',visible>0);
+  };
+  const bindChapterPicker=(id,key,onChange)=>{const picker=$('#'+id);picker.addEventListener('change',event=>{if(!event.target.matches('.chapter-picker-menu input[type="checkbox"]'))return;state.settings[key]=[...picker.querySelectorAll('.chapter-picker-menu input:checked')].map(input=>input.value);save();onChange();});picker.addEventListener('click',event=>{if(!event.target.closest('.chapter-picker-clear'))return;state.settings[key]=[];save();onChange();});};
+  bindChapterPicker('studyChapterPicker','studyChapters',()=>{deckSourceSignature='';position=0;renderCard();});
+  bindChapterPicker('wordChapterPicker','wordChapters',renderWords);
   updateSummary();renderCard();renderWords();save();
 })();
 </script>
